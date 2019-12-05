@@ -1,0 +1,8 @@
+node_modules
+
+# Files not needed as I will keep necessary libraries in the main javascript folder rather than per project
+.exercism
+/*/.eslintrc
+/*/babel.config.js
+/*/package.lock.json
+/*/yarn.lock
