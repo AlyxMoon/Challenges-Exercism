@@ -7,6 +7,18 @@ export const getFactorPairs = (num) => {
   return pairs
 }
 
+export class TripletArray extends Array {
+  sort () {
+    return super.sort((t1, t2) => {
+      for (let key of ['a', 'b', 'c']) {
+        if (t1[key] < t2[key]) return -1
+        if (t1[key] > t2[key]) return 1
+      }
+      return 0
+    })
+  }
+}
+
 export class Triplet {
   constructor (a, b, c) {
     this.a = a
@@ -27,7 +39,7 @@ export class Triplet {
   }
 
   static where ({ minFactor = 1, maxFactor = 0, sum = 0 }) {
-    const triplets = []
+    const triplets = new TripletArray()
 
     // Dickson's Method for generating triplets
     // Lowest r that produces an a value is minFactor / 1.5 rounded up. Then round up again to nearest even number.
