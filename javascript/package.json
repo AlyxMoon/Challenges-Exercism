@@ -7,9 +7,19 @@
     "type": "git",
     "url": "https://github.com/exercism/javascript"
   },
+  "license": "MIT",
+  "scripts": {
+    "test": "jest --config jest.conf.js --no-cache",
+    "watch": "jest --no-cache --watch ./*",
+    "lint": "eslint .",
+    "lint-test": "eslint . && yarn run test"
+  },
+  "dependencies": {},
   "devDependencies": {
     "@babel/cli": "^7.5.5",
     "@babel/core": "^7.5.5",
+    "@babel/plugin-proposal-class-properties": "^7.7.4",
+    "@babel/plugin-proposal-private-methods": "^7.7.4",
     "@babel/preset-env": "^7.5.5",
     "@types/jest": "^24.0.16",
     "@types/node": "^12.6.8",
@@ -18,19 +28,5 @@
     "eslint": "^6.1.0",
     "eslint-plugin-import": "^2.18.2",
     "jest": "^24.8.0"
-  },
-  "jest": {
-    "modulePathIgnorePatterns": [
-      "package.json"
-    ]
-  },
-  "scripts": {
-    "test": "jest --no-cache ./*",
-    "test:dir": "jest --no-cache",
-    "watch": "jest --no-cache --watch ./*",
-    "lint": "eslint .",
-    "lint-test": "eslint . && jest --no-cache ./* "
-  },
-  "license": "MIT",
-  "dependencies": {}
+  }
 }
