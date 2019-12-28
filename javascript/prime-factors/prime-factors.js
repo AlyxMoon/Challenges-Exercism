@@ -23,13 +23,18 @@ export const primeFactors = (number) => {
   const generator = generatePrimes()
   const primeFactors = []
 
-  while (number > 1) {
-    const nextPrime = generator.next().value
-    while (number % nextPrime === 0) {
-      primeFactors.push(nextPrime)
-      number = number / nextPrime
+  let n = number
+  for (
+    let prime = generator.next().value;
+    prime <= Math.ceil(Math.sqrt(n));
+    prime = (n % prime) ? generator.next().value : prime
+  ) {
+    if (n % prime === 0) {
+      primeFactors.push(prime)
+      n /= prime
     }
   }
 
+  if (n > 1) primeFactors.push(n)
   return primeFactors
-};
+}
