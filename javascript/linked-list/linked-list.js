@@ -1,11 +1,11 @@
 
-const [head, tail, size] = [Symbol('head'), Symbol('tail'), Symbol('size')]
+const [head, tail] = [Symbol('head'), Symbol('tail')]
 
 class Node {
-  constructor (data, prev, next) {
+  constructor (data) {
     this.data = data
-    this.prev = prev
-    this.next = next
+    this.prev = null
+    this.next = null
   }
 }
 
@@ -13,85 +13,85 @@ export class LinkedList {
   constructor () {
     this[head] = null
     this[tail] = null
-    this[size] = 0
   }
 
   push (data) {
-    const newNode = new Node(data, this[tail], null)
-
-    if (!this[head]) this[head] = newNode
-    else this[tail].next = newNode
-
-    this[tail] = newNode
-    this[size]++
-
-    return data
+    return this.addTo(tail, data)
   }
 
   pop () {
-    if (!this[tail]) return
-
-    const { data, prev } = this[tail]
-
-    if (prev) prev.next = null
-
-    this[tail] = prev
-    this[size]--
-
-    return data
+    return this.removeFrom(tail)
   }
 
   unshift (data) {
-    const newNode = new Node(data, null, this[head])
-
-    if (!this[tail]) this[tail] = newNode
-    else this[head].prev = newNode
-
-    this[head] = newNode
-    this[size]++
-
-    return data
+    return this.addTo(head, data)
   }
 
   shift () {
-    if (!this[tail]) return
-
-    const { data, next } = this[head]
-
-    if (next) next.prev = null
-
-    this[head] = next
-    this[size]--
-
-    return data
+    return this.removeFrom(head)
   }
 
-  delete (data) {
+  delete (data, direction = head) {
+    return this.removeFrom(direction, data)
+  }
+
+  count () {
+    let items = 0
     for (let currentNode = this[head]; currentNode; currentNode = currentNode.next) {
-      if (currentNode.data === data) {
-        const { prev, next } = currentNode
+      items++
+    }
 
-        if (prev) {
-          prev.next = next
-        } else {
-          this[head] = next
-        }
+    return items
+  }
 
-        if (next) {
-          next.prev = prev
-        } else {
-          this[tail] = prev
-        }
+  addTo (direction, data) {
+    const newNode = new Node(data)
 
-        this[size]--
-        break
+    if (!this[head]) {
+      this[head] = newNode
+      this[tail] = newNode
+    } else {
+      if (direction === head) {
+        newNode.next = this[head]
+        this[head].prev = newNode
+        this[head] = newNode
+      }
+
+      if (direction === tail) {
+        newNode.prev = this[tail]
+        this[tail].next = newNode
+        this[tail] = newNode
       }
     }
 
     return data
   }
 
-  count () {
-    return this[size]
+  removeFrom(direction, data = null) {
+    const nodeToRemove = data
+      ? this.find(data, direction)
+      : this[direction]
+
+    if (!nodeToRemove) return
+
+    const { prev, next } = nodeToRemove
+
+    if (prev) prev.next = next
+    if (next) next.prev = prev
+
+    // removed the head/tail
+    if (!prev) this[head] = next
+    if (!next) this[tail] = prev
+
+    return nodeToRemove.data
+  }
+
+  find (data, direction = head) {
+    if (!this[head]) return
+
+    const forwardNode = direction === head ? 'next' : 'prev'
+    for (let currentNode = this[direction]; currentNode; currentNode = currentNode[forwardNode]) {
+      if (currentNode.data === data) return currentNode
+    }
   }
 }
