@@ -1,72 +1,77 @@
 
-const [head, tail] = [Symbol('head'), Symbol('tail')]
+const [data, prev, next] = [Symbol('data'), Symbol('prev'), Symbol('next')]
+const sentinel = Symbol('sentinel')
 
 class Node {
-  constructor (data, prev = null, next = null) {
-    this.data = data
-    this.prev = prev
-    this.next = next
+  constructor (d, p = null, n = null) {
+    this[data] = d
+    this[prev] = p
+    this[next] = n
   }
 }
 
 export class LinkedList {
   constructor () {
-    this[head] = null
-    this[tail] = null
+    this[sentinel] = new Node(null)
+    this[sentinel][prev] = this[sentinel]
+    this[sentinel][next] = this[sentinel]
   }
 
-  push (data) {
-    const newNode = new Node(data, this[tail], null)
-    if (this[tail]) this[tail].next = newNode
-    if (!this[head]) this[head] = newNode
-    this[tail] = newNode
+  push (value) {
+    const newNode = new Node(value, this[sentinel][prev], this[sentinel][prev][next])
+
+    this[sentinel][prev][next] = newNode
+    this[sentinel][prev] = newNode
   }
 
   pop () {
-    const { data } = this[tail]
-    this[tail] = this[tail].prev
-    if (!this[tail]) this[head] = null
-    return data
+    const value = this[sentinel][prev][data]
+
+    this[sentinel][prev][prev][next] = this[sentinel][prev][next]
+    this[sentinel][prev] = this[sentinel][prev][prev]
+
+    return value
   }
 
-  unshift (data) {
-    const newNode = new Node(data, null, this[head])
-    if (this[head]) this[head].prev = newNode
-    if (!this[tail]) this[tail] = newNode
-    this[head] = newNode
+  unshift (value) {
+    const newNode = new Node(value, this[sentinel][next][prev], this[sentinel][next])
+
+    this[sentinel][next][prev] = newNode
+    this[sentinel][next] = newNode
   }
 
   shift () {
-    const { data } = this[head]
-    this[head] = this[head].next
-    if (!this[head]) this[tail] = null
-    return data
+    const value = this[sentinel][next][data]
+
+    this[sentinel][next][next][prev] = this[sentinel][next][prev]
+    this[sentinel][next] = this[sentinel][next][next]
+
+    return value
   }
 
   count () {
     let items = 0
-    for (let node = this[head]; node; node = node.next) items++
+
+    for (let node = this[sentinel][next]; node !== this[sentinel]; node = node[next]) {
+      items++
+    }
+
     return items
   }
 
-  delete(data) {
-    const nodeToRemove = this.find(data)
-    if (!nodeToRemove) return
-
-    const { prev, next } = nodeToRemove
-
-    if (prev) prev.next = next
-    if (next) next.prev = prev
-
-    if (!prev) this[head] = next
-    if (!next) this[tail] = prev
-
-    return data
+  find (value) {
+    for (let node = this[sentinel][next]; node !== this[sentinel]; node = node[next]) {
+      if (node[data] === value) return node
+    }
   }
 
-  find (data) {
-    for (let node = this[head]; node; node = node.next) {
-      if (node.data === data) return node
-    }
+  delete(value) {
+    const node = this.find(value)
+    if (!node) return
+
+    node[prev][next] = node[next]
+    node[next][prev] = node[prev]
+
+    return node[data]
   }
 }
