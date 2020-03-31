@@ -20,7 +20,7 @@ export class LinkedList {
   }
 
   pop () {
-    return this.removeFrom(tail)
+    return this.delete(null, tail)
   }
 
   unshift (data) {
@@ -28,11 +28,7 @@ export class LinkedList {
   }
 
   shift () {
-    return this.removeFrom(head)
-  }
-
-  delete (data, direction = head) {
-    return this.removeFrom(direction, data)
+    return this.delete(null, head)
   }
 
   count () {
@@ -67,7 +63,7 @@ export class LinkedList {
     return data
   }
 
-  removeFrom(direction, data = null) {
+  delete(data, direction) {
     const nodeToRemove = data
       ? this.find(data, direction)
       : this[direction]
