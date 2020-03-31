@@ -13,40 +13,23 @@ class Node {
 export class LinkedList {
   constructor () {
     this[sentinel] = new Node(null)
-    this[sentinel][prev] = this[sentinel]
-    this[sentinel][next] = this[sentinel]
+    this[sentinel][prev] = this[sentinel][next] = this[sentinel]
   }
 
   push (value) {
-    const newNode = new Node(value, this[sentinel][prev], this[sentinel][prev][next])
-
-    this[sentinel][prev][next] = newNode
-    this[sentinel][prev] = newNode
+    this.insertAfter(this[sentinel][prev], value)
   }
 
   pop () {
-    const value = this[sentinel][prev][data]
-
-    this[sentinel][prev][prev][next] = this[sentinel][prev][next]
-    this[sentinel][prev] = this[sentinel][prev][prev]
-
-    return value
+    return this.remove(this[sentinel][prev])
   }
 
   unshift (value) {
-    const newNode = new Node(value, this[sentinel][next][prev], this[sentinel][next])
-
-    this[sentinel][next][prev] = newNode
-    this[sentinel][next] = newNode
+    this.insertAfter(this[sentinel], value)
   }
 
   shift () {
-    const value = this[sentinel][next][data]
-
-    this[sentinel][next][next][prev] = this[sentinel][next][prev]
-    this[sentinel][next] = this[sentinel][next][next]
-
-    return value
+    return this.remove(this[sentinel][next])
   }
 
   count () {
@@ -67,11 +50,16 @@ export class LinkedList {
 
   delete(value) {
     const node = this.find(value)
-    if (!node) return
+    return node ? this.remove(node) : null
+  }
 
+  insertAfter(existingNode, value) {
+    existingNode[next] = existingNode[next][prev] = new Node(value, existingNode, existingNode[next])
+  }
+
+  remove(node) {
     node[prev][next] = node[next]
     node[next][prev] = node[prev]
-
     return node[data]
   }
 }
